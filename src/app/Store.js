@@ -1,4 +1,4 @@
-
+//renvoie un message d'erreur si le statut de la réponse n'est pas ok
 const jsonOrThrowIfError = async (response) => {
   if(!response.ok) throw new Error((await response.json()).message)
   return response.json()
@@ -25,7 +25,7 @@ class Api {
 const getHeaders = (headers) => {
   const h = { }
   if (!headers.noContentType) h['Content-Type'] = 'application/json'
-  const jwt = localStorage.getItem('jwt')
+  const jwt = localStorage.getItem('jwt') //jsonwebtocken
   if (jwt && !headers.noAuthorization) h['Authorization'] = `Bearer ${jwt}`
   return {...h, ...headers}
 }
@@ -53,7 +53,7 @@ class ApiEntity {
 }
 
 
-
+// selon la méthode appelée renvoie vers une méthode de l'apiEntity ou crée une nouvelle instance de cette api
 class Store {
   constructor() {
     this.api = new Api({baseUrl: 'http://localhost:5678'})

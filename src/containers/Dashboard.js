@@ -5,6 +5,13 @@ import { ROUTES_PATH } from '../constants/routes.js'
 import USERS_TEST from '../constants/usersTest.js'
 import Logout from "./Logout.js"
 
+/**
+ * 
+ * @param {Object} data données a traiter 
+ * @param {string} status status de la note de frais
+ * @returns 
+ */
+
 export const filteredBills = (data, status) => {
   return (data && data.length) ?
     data.filter(bill => {
@@ -24,6 +31,12 @@ export const filteredBills = (data, status) => {
       return selectCondition
     }) : []
 }
+
+/**
+ * 
+ * @param {Object} bill note de frais a afficher
+ * @returns 
+ */
 
 export const card = (bill) => {
   const firstAndLastNames = bill.email.split('@')[0]
@@ -50,6 +63,12 @@ export const card = (bill) => {
   `)
 }
 
+/**
+ * 
+ * @param {Object} bills tableau d'objets a afficher
+ * @returns 
+ */
+
 export const cards = (bills) => {
   return bills && bills.length ? bills.map(bill => card(bill)).join("") : ""
 }
@@ -70,7 +89,7 @@ export default class {
     this.document = document
     this.onNavigate = onNavigate
     this.store = store
-    $('#arrow-icon1').click((e) => this.handleShowTickets(e, bills, 1))
+    $('#arrow-icon1').click((e) => this.handleShowTickets(e, bills, 1)) //lance la méthode handleShowTicket au click sur la flèche
     $('#arrow-icon2').click((e) => this.handleShowTickets(e, bills, 2))
     $('#arrow-icon3').click((e) => this.handleShowTickets(e, bills, 3))
     this.getBillsAllUsers()
@@ -88,8 +107,8 @@ export default class {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
     if (this.counter % 2 === 0) {
-      bills.forEach(b => {
-        $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
+      bills.forEach(bill => { // modification de b en bill
+        $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
       })
       $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
       $('.dashboard-right-container div').html(DashboardFormUI(bill))
@@ -129,13 +148,21 @@ export default class {
     this.onNavigate(ROUTES_PATH['Dashboard'])
   }
 
+  /**
+   * 
+   * @param {Event} e 
+   * @param {Object} bills données a traiter récupérées de la bdd
+   * @param {*} index index de la flèche cliquée
+   * @returns 
+   */
+
   handleShowTickets(e, bills, index) {
-    if (this.counter === undefined || this.index !== index) this.counter = 0
-    if (this.index === undefined || this.index !== index) this.index = index
-    if (this.counter % 2 === 0) {
+    if (this.counter === undefined || this.index !== index) this.counter = 0 //déclarer un compteur de click, si on ne clique pas sur la même flèche le compteur se remet à 0
+    if (this.index === undefined || this.index !== index) this.index = index //définir l'index de la flèche sur laquelle on clique
+    if (this.counter % 2 === 0) { //créer un toggle pour afficher ou masquer le contenu
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
       $(`#status-bills-container${this.index}`)
-        .html(cards(filteredBills(bills, getStatus(this.index))))
+        .html(cards(filteredBills(bills, getStatus(this.index)))) //ouvre et rend les bills correspondants
       this.counter ++
     } else {
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
@@ -145,7 +172,12 @@ export default class {
     }
 
     bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      //$(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      $(`#open-bill${bill.id}`, `#status-bills-container${this.index}` ).click((e) => {
+        this.handleEditTicket(e, bill, bills)
+      })
+      let all = $(`#open-bill${bill.id}`, `#status-bills-container${this.index}` )
+      console.log('all', all);
     })
 
     return bills
@@ -166,7 +198,7 @@ export default class {
           date: doc.date,
           status: doc.status
         }))
-        return bills
+        return bills //retourne les données a traiter de la bdd
       })
       .catch(console.log)
     }

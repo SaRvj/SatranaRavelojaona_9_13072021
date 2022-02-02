@@ -16,29 +16,36 @@ export default class NewBill {
     new Logout({ document, localStorage, onNavigate })
   }
   handleChangeFile = e => {
+    console.log('yesyes');
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
-    const formData = new FormData()
-    const email = JSON.parse(localStorage.getItem("user")).email
-    formData.append('file', file)
-    formData.append('email', email)
+    const formData = new FormData() //crée un nouvel objet form vide
+    const email = JSON.parse(localStorage.getItem("user")).email //récupère email
+    formData.append('file', file) //ajoute une clé valeur à formData
+    formData.append('email', email) //ajoute une clé valeur à formData
 
-    this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true
-        }
-      })
-      .then(({fileUrl, key}) => {
-        console.log(fileUrl)
-        this.billId = key
-        this.fileUrl = fileUrl
-        this.fileName = fileName
-      }).catch(error => console.error(error))
+    //tester format de l'image
+    if ( /\.(jpe?g|png)$/i.test(fileName) ){   //vérifie l'extension du fichier
+      this.store
+        .bills()
+        .create({
+          data: formData,
+          headers: {
+            noContentType: true
+          }
+        })
+        .then(({fileUrl, key}) => {
+          //console.log(fileUrl)
+          this.billId = key
+          this.fileUrl = fileUrl
+          this.fileName = fileName
+        })//.catch(error => console.error(error))
+    }else{
+      alert('format non supporté veuillez sélectionner un média au format .jpg , .jpeg ou .png ' ) //format non valide afficher un message d'alert
+      return
+    }
   }
   handleSubmit = e => {
     e.preventDefault()

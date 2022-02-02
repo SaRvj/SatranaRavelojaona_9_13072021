@@ -39,7 +39,7 @@ export default class {
             try {
               return {
                 ...doc,
-                date: formatDate(doc.date),
+                //date: formatDate(doc.date), //enlevé pour avoir le bon format de date complète
                 status: formatStatus(doc.status)
               }
             } catch(e) {
@@ -56,6 +56,7 @@ export default class {
           console.log('length', bills.length)
         return bills
       })
+      .catch(error => error)
     }
   }
 }
