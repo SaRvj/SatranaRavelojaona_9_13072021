@@ -1,5 +1,6 @@
 import { ROUTES_PATH } from '../constants/routes.js'
 import Logout from "./Logout.js"
+import {localStorageMock} from '../__mocks__/localStorage.js'
 
 export default class NewBill {
   constructor({ document, onNavigate, store, localStorage }) {
@@ -41,7 +42,7 @@ export default class NewBill {
           this.billId = key
           this.fileUrl = fileUrl
           this.fileName = fileName
-        })//.catch(error => console.error(error))
+        }).catch(error => console.error(error))
     }else{
       alert('format non supporté veuillez sélectionner un média au format .jpg , .jpeg ou .png ' ) //format non valide afficher un message d'alert
       return

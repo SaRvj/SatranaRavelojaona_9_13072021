@@ -53,7 +53,7 @@ class ApiEntity {
 }
 
 
-// selon la méthode appelée renvoie vers une méthode de l'apiEntity ou crée une nouvelle instance de cette api
+//selon la méthode appelée renvoie vers une méthode de l'apiEntity ou crée une nouvelle instance de cette api
 class Store {
   constructor() {
     this.api = new Api({baseUrl: 'http://localhost:5678'})

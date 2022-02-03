@@ -107,7 +107,7 @@ export default class {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
     if (this.counter % 2 === 0) {
-      bills.forEach(bill => { // modification de b en bill
+      bills.forEach(bill => { //modification de b en bill
         $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
       })
       $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
