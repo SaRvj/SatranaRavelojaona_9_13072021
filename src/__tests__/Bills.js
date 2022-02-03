@@ -32,8 +32,8 @@ describe("Given I am connected as an employee", () => {
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
     })
-  })
-})
+//   })
+// })
 describe('Given i am on the loading page',()=>{
   test('Should show Loading...',()=>{
     const html = BillsUI({loading : true})
@@ -122,4 +122,8 @@ describe("Given I am a user connected as Employee", () => {
       expect(message).toBeTruthy()
     })
   })
+})
+
+
+})
 })
