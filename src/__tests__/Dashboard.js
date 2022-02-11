@@ -1,6 +1,6 @@
-/**
- * @jest-environment jsdom
- */
+// /**
+//  * @jest-environment jsdom
+//  */
 
 import { fireEvent, screen } from "@testing-library/dom"
 import userEvent from '@testing-library/user-event'
@@ -9,7 +9,7 @@ import DashboardUI from "../views/DashboardUI.js"
 import Dashboard, { filteredBills, cards } from "../containers/Dashboard.js"
 import { ROUTES } from "../constants/routes"
 import { localStorageMock } from "../__mocks__/localStorage.js"
-import store from "../__mocks__/store"
+import firebase from "../__mocks__/firebase"
 import { bills } from "../fixtures/bills"
 
 
@@ -49,7 +49,7 @@ describe('Given I am connected as an Admin', () => {
 
   describe('When I am on Dashboard page and I click on arrow', () => {
     test('Then, tickets list should be unfolding, and cars should contain first and lastname', async () => {
-
+      
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
@@ -61,14 +61,14 @@ describe('Given I am connected as an Admin', () => {
 
       const dashboard = new Dashboard({
         document, onNavigate, store: null, bills, localStorage: window.localStorage
-      })
+      })          
       const html = DashboardUI({ data: bills })
-
+   
       document.body.innerHTML = html
 
-      const handleShowTickets1 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 1))
-      const handleShowTickets2 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 2))
-      const handleShowTickets3 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 3))
+      const handleShowTickets1 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 1)) 
+      const handleShowTickets2 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 2))    
+      const handleShowTickets3 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 3))    
 
       const icon1 = screen.getByTestId('arrow-icon1')
       const icon2 = screen.getByTestId('arrow-icon2')
@@ -99,13 +99,13 @@ describe('Given I am connected as an Admin', () => {
         document.body.innerHTML = ROUTES({ pathname })
       }
       const store = null
-      //modifie le localStorage par le  localStorageMock
+
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       const dashboard = new Dashboard({
         document, onNavigate, store, bills, localStorage: window.localStorage
       })
 
-      const handleEditTicket = jest.fn((e) => dashboard.handleEditTicket(e, bills[0], bills))
+      const handleEditTicket = jest.fn((e) => dashboard.handleEditTicket(e, bills[0], bills))   
       const iconEdit = screen.getByTestId('open-bill47qAXb6fIm2zOKkLzMro')
       iconEdit.addEventListener('click', handleEditTicket)
       userEvent.click(iconEdit)
@@ -207,17 +207,17 @@ describe('Given I am connected as Admin and I am on Dashboard page and I clicked
   })
 })
 
-// test d'intégration GET
+// test d'integration GET
 describe("Given I am a user connected as Admin", () => {
   describe("When I navigate to Dashboard", () => {
     test("fetches bills from mock API GET", async () => {
-       const getSpy = jest.spyOn(store, "get")
-       const bills = await store.get()
+       const getSpy = jest.spyOn(firebase, "get")
+       const bills = await firebase.get()
        expect(getSpy).toHaveBeenCalledTimes(1)
        expect(bills.data.length).toBe(4)
     })
     test("fetches bills from an API and fails with 404 message error", async () => {
-      store.get.mockImplementationOnce(() =>
+      firebase.get.mockImplementationOnce(() =>
         Promise.reject(new Error("Erreur 404"))
       )
       const html = DashboardUI({ error: "Erreur 404" })
@@ -226,7 +226,7 @@ describe("Given I am a user connected as Admin", () => {
       expect(message).toBeTruthy()
     })
     test("fetches messages from an API and fails with 500 message error", async () => {
-      store.get.mockImplementationOnce(() =>
+      firebase.get.mockImplementationOnce(() =>
         Promise.reject(new Error("Erreur 500"))
       )
       const html = DashboardUI({ error: "Erreur 500" })
@@ -236,4 +236,5 @@ describe("Given I am a user connected as Admin", () => {
     })
   })
 })
+
 

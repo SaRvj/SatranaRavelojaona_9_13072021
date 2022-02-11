@@ -1,12 +1,13 @@
+
 import { ROUTES_PATH } from '../constants/routes.js'
 import Logout from "./Logout.js"
-import {localStorageMock} from '../__mocks__/localStorage.js'
 
 export default class NewBill {
   constructor({ document, onNavigate, store, localStorage }) {
     this.document = document
     this.onNavigate = onNavigate
     this.store = store
+   
     const formNewBill = this.document.querySelector(`form[data-testid="form-new-bill"]`)
     formNewBill.addEventListener("submit", this.handleSubmit)
     const file = this.document.querySelector(`input[data-testid="file"]`)
@@ -19,7 +20,15 @@ export default class NewBill {
   handleChangeFile = e => {
     console.log('yesyes');
     e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const inputField = this.document.querySelector(`input[data-testid="file"]`);
+    const file = inputField.files[0];
+
+    //tester format de l'image
+    if ( /\.(jpe?g|png|gif)$/i.test(file?.name) === false ) { //vérifie l'extension du fichier
+      alert("Veuillez choisir un format d'image accepté : .jpg, .jpeg, .png"); //format non valide afficher un message d'alert
+      inputField.value = "";
+      return;
+    }
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData() //crée un nouvel objet form vide
@@ -27,31 +36,27 @@ export default class NewBill {
     formData.append('file', file) //ajoute une clé valeur à formData
     formData.append('email', email) //ajoute une clé valeur à formData
 
-    //tester format de l'image
-    if ( /\.(jpe?g|png)$/i.test(fileName) ){   //vérifie l'extension du fichier
-      this.store
-        .bills()
-        .create({
-          data: formData,
-          headers: {
-            noContentType: true
-          }
-        })
-        .then(({fileUrl, key}) => {
-          //console.log(fileUrl)
-          this.billId = key
-          this.fileUrl = fileUrl
-          this.fileName = fileName
-        }).catch(error => console.error(error))
-    }else{
-      alert('format non supporté veuillez sélectionner un média au format .jpg , .jpeg ou .png ' ) //format non valide afficher un message d'alert
-      return
-    }
+    if (this.store) this.store
+      .bills()
+      .create({
+        data: formData,
+        headers: {
+          noContentType: true
+        }
+      })
+      .then(({ fileUrl, key }) => {
+        console.log(fileUrl)
+        this.billId = key
+        this.fileUrl = fileUrl
+        this.fileName = fileName
+      })
+      .catch(error => console.error(error));
+
   }
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
-    const email = JSON.parse(localStorage.getItem("user")).email
+    //console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+    const email = JSON.parse(localStorage.getItem("user")).email //récupère email
     const bill = {
       email,
       type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
@@ -68,7 +73,7 @@ export default class NewBill {
     this.updateBill(bill)
     this.onNavigate(ROUTES_PATH['Bills'])
   }
-
+/*istanbul ignore next*/
   // not need to cover this function by tests
   updateBill = (bill) => {
     if (this.store) {
