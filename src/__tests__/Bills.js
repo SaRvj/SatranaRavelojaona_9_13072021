@@ -200,18 +200,18 @@ describe("Given I am connected as an employee", () => {
       const html = BillsUI({ data: bills });
       document.body.innerHTML = html;
       const billBody = screen.getAllByTestId("tbody");
-      // const billName = screen.getAllByTestId("name");
-      // const billDate = screen.getAllByTestId("date");
-      // const billAmount = screen.getAllByTestId("amount");
-      // const billStatus = screen.getAllByTestId("status");
-      // const billIcon = screen.getAllByTestId("icon-eye");
+      const billName = screen.getAllByTestId("name");
+      const billDate = screen.getAllByTestId("date");
+      const billAmount = screen.getAllByTestId("amount");
+      const billStatus = screen.getAllByTestId("status");
+      const billIcon = screen.getAllByTestId("icon-eye");
 
       expect(billBody.length).toBeGreaterThan(0);
-      // expect(billName.length).toBeGreaterThan(0);
-      // expect(billDate.length).toBeGreaterThan(0);
-      // expect(billAmount.length).toBeGreaterThan(0);
-      // expect(billStatus.length).toBeGreaterThan(0);
-      // expect(billIcon.length).toBeGreaterThan(0);
+      expect(billName.length).toBeGreaterThan(0);
+      expect(billDate.length).toBeGreaterThan(0);
+      expect(billAmount.length).toBeGreaterThan(0);
+      expect(billStatus.length).toBeGreaterThan(0);
+      expect(billIcon.length).toBeGreaterThan(0);
     });
 
     test("Then bills should be ordered from earliest to latest", () => {

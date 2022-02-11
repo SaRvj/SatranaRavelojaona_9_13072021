@@ -7,12 +7,12 @@ import Actions from './Actions.js'
 const row = (bill) => {
   return (`
     <tr>
-      <td>${bill.type}</td>
-      <td>${bill.name}</td>
-      <td>${bill.date}</td>
-      <td>${bill.amount} €</td>
-      <td>${bill.status}</td>
-      <td>
+      <td data-testid="type">${bill.type}</td>
+      <td data-testid="name">${bill.name}</td>
+      <td data-testid="date">${bill.date}</td>
+      <td data-testid="amount">${bill.amount} €</td>
+      <td data-testid="status">${bill.status}</td>
+      <td data-testid="fileUrl">
         ${Actions(bill.fileUrl)}
       </td>
     </tr>
@@ -20,7 +20,9 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  if( typeof data === "undefined" || data.length === 0 ) { return "" }
+  const orderedDatesByAntiChrono = data.sort((a, b) => (a.date < b.date) ? 1 : -1)
+  return (data && data.length) ? orderedDatesByAntiChrono.map(bill => row(bill)).join("") : ""
 }
 
 export default ({ data: bills, loading, error }) => {
@@ -69,7 +71,8 @@ export default ({ data: bills, loading, error }) => {
               </tr>
           </thead>
           <tbody data-testid="tbody">
-            ${rows(bills && bills.length ? bills.sort((a, b) => ((a.date < b.date) ? 1 : -1)): bills)}
+            <!--${rows(bills && bills.length ? bills.sort((a, b) => ((a.date < b.date) ? 1 : -1)): bills)}-->
+            ${rows(bills)}
           </tbody>
           </table>
         </div>
