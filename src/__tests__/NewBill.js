@@ -11,8 +11,13 @@ import BillsUI from "../views/BillsUI.js"
 import {ROUTES_PATH } from "../constants/routes";
 import "@testing-library/jest-dom/extend-expect";
 import Router from "../app/Router.js";
+import { billsMock } from "../__mocks__/addBill.js"
+import {error404} from "../__mocks__/Error.js"
+import {error500} from "../__mocks__/Error.js"
 import axios from "axios";
 import AddBill from "../__mocks__/addBill"
+
+
 
 jest.mock('axios');
 describe("Given I am connected as an employee", () => {
@@ -186,43 +191,30 @@ describe("Given I am connected as an employee", () => {
 describe("When I am an user connected as Employee", () =>{
   describe("When I do fill required files in good format and I click on submit button", () =>{
     test("Then Add new bill to mock API POST", async () => {
-      const addBill =[ 
-        {
-          email: 'a@a',
-          type: 'Transports',
-          name:  'Train Paris-Suisse',
-          amount: '300€',
-          date:  '2022-01-10',
-          vat: 10,
-          pct: 20,
-          commentary: "",
-          fileUrl: 'https://stockimage.com/image.png',
-          fileName: 'image.png',
-          status: 'pending'
-        }];
-      const resp = {data: addBill};
+      
+      const resp = {data: billsMock};
       axios.post.mockResolvedValue(resp);
-      return AddBill.post().then(data => expect(data).toEqual(addBill));
+      return AddBill.post().then(data => expect(data).toEqual(billsMock));
       
     
     });
     
     test("fetches bills from an API and fails with 404 message error", async () => {
       axios.post.mockImplementationOnce(() =>
-        Promise.reject(new Error("Erreur 404"))
+        Promise.reject(new Error(error404))
       )
-      const html = BillsUI({ error: "Erreur 404" })
+      const html = BillsUI({ error:  error404})
       document.body.innerHTML = html
-      const message = await screen.getByText(/Erreur 404/)
+      const message = await screen.getByText("impossible d'importer")
       expect(message).toBeTruthy()
     })
     test("fetches messages from an API and fails with 500 message error", async () => {
       axios.post.mockImplementationOnce(() =>
-        Promise.reject(new Error("Erreur 500"))
+        Promise.reject(new Error(error500))
       )
-      const html = BillsUI({ error: "Erreur 500" })
+      const html = BillsUI({ error: error500 })
       document.body.innerHTML = html
-      const message = await screen.getByText(/Erreur 500/)
+      const message = await screen.getByText("impossible d'importer")
       expect(message).toBeTruthy()
     })
   })

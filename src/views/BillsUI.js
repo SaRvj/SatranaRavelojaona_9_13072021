@@ -21,7 +21,10 @@ const row = (bill) => {
 
 const rows = (data) => {
   if( typeof data === "undefined" || data.length === 0 ) { return "" }
+  data=data.filter(function(el) { return el.date; }); //date pas null
+  //console.log(data);
   const orderedDatesByAntiChrono = data.sort((a, b) => (a.date < b.date) ? 1 : -1)
+  
   return (data && data.length) ? orderedDatesByAntiChrono.map(bill => row(bill)).join("") : ""
 }
 
@@ -71,7 +74,7 @@ export default ({ data: bills, loading, error }) => {
               </tr>
           </thead>
           <tbody data-testid="tbody">
-            <!--${rows(bills && bills.length ? bills.sort((a, b) => ((a.date < b.date) ? 1 : -1)): bills)}-->
+            
             ${rows(bills)}
           </tbody>
           </table>
